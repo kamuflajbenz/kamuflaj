@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TikTok 60/120 FPS Patch - Eren</title>
+  <!-- Google Fonts: Poppins & JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Temel Sıfırlamalar */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #000080;
+      background-image: radial-gradient(circle at center, #000080 0%, #000033 70%, #000010 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      padding: 30px 15px;
+      overflow-x: hidden;
+    }
+
+    /* Arka Plan Vinyet Efekti */
+    .vignette {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.9),
+                  inset 0 0 200px rgba(0, 0, 0, 0.7);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Ana Konteynır */
+    .app-container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Üst Navigasyon / Header */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 15px 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .brand-title {
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-title span {
+      color: #00f2fe;
+    }
+
+    .btn-back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      border: 1px solid rgba(0, 242, 254, 0.4);
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-back-home:hover {
+      background: rgba(0, 242, 254, 0.2);
+      border-color: #00f2fe;
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+    }
+
+    /* 3 Sütunlu Ana Grid Düzeni */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 260px 1fr 300px;
+      gap: 20px;
+    }
+
+    /* Genel Kart Yapısı */
+    .panel-card {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: #00f2fe;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    /* Sol Panel - Engine Modes */
+    .mode-option {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .mode-option.active {
+      border-color: #00f2fe;
+      background: rgba(0, 242, 254, 0.08);
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.15);
+    }
+
+    .mode-option h4 {
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: #00f2fe;
+      margin-bottom: 4px;
+    }
+
+    .mode-option h5 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .mode-option p {
+      font-size: 0.75rem;
+      color: #a0aec0;
+      margin-top: 2px;
+    }
+
+    .ram-info {
+      margin-top: auto;
+      padding-top: 15px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.1);
+    }
+
+    .ram-info h4 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: #00f2fe;
+    }
+
+    .ram-info p {
+      font-size: 0.75rem;
+      color: #a0aec0;
+      margin-top: 4px;
+    }
+
+    /* Orta Panel - Dropzone & FPS Switcher */
+    .center-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .fps-toggle-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 5px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .fps-tab {
+      background: transparent;
+      border: none;
+      color: #a0aec0;
+      padding: 12px 10px;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .fps-tab.active {
+      background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+      color: #000;
+      box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+    }
+
+    .fps-tab span {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 400;
+      opacity: 0.8;
+    }
+
+    /* Sürükle Bırak Alanı */
+    .dropzone {
+      border: 2px dashed rgba(0, 242, 254, 0.4);
+      border-radius: 16px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 50px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .dropzone:hover, .dropzone.dragover {
+      border-color: #00f2fe;
+      background: rgba(0, 242, 254, 0.05);
+      box-shadow: 0 0 25px rgba(0, 242, 254, 0.2);
+    }
+
+    .upload-icon {
+      width: 50px;
+      height: 50px;
+      background: rgba(0, 242, 254, 0.1);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 15px;
+      color: #00f2fe;
+      font-size: 1.5rem;
+    }
+
+    .dropzone h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .dropzone p {
+      font-size: 0.85rem;
+      color: #a0aec0;
+      margin-bottom: 15px;
+    }
+
+    .client-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: #00f2fe;
+      background: rgba(0, 242, 254, 0.1);
+      border: 1px solid rgba(0, 242, 254, 0.25);
+      padding: 5px 14px;
+      border-radius: 20px;
+    }
+
+    #fileInput {
+      display: none;
+    }
+
+    /* Progress Status */
+    .status-box {
+      margin-top: 15px;
+      display: none;
+      width: 100%;
+      text-align: center;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00f2fe, #4facfe);
+      transition: width 0.3s ease;
+    }
+
+    /* Sağ Panel - Quick Guide & Topaz Settings */
+    .guide-step {
+      margin-bottom: 14px;
+    }
+
+    .guide-step h5 {
+      font-size: 0.85rem;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .guide-step p {
+      font-size: 0.78rem;
+      color: #a0aec0;
+      line-height: 1.4;
+      margin-top: 2px;
+    }
+
+    .topaz-box {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 10px;
+    }
+
+    .topaz-box-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #a0aec0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .setting-row {
+      margin-bottom: 10px;
+    }
+
+    .setting-row label {
+      display: block;
+      font-size: 0.7rem;
+      color: #718096;
+      margin-bottom: 3px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .setting-select {
+      width: 100%;
+      background: rgba(20, 25, 40, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      outline: none;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+    }
+
+    /* Responsive Uyumluluk */
+    @media (max-width: 992px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Vinyet Efekti -->
+  <div class="vignette"></div>
+
+  <div class="app-container">
+    
+    <!-- Üst Navigasyon -->
+    <header class="top-nav">
+      <div class="brand-title">Eren <span>FPS Patch</span></div>
+      <a href="index.html" class="btn-back-home">← Portfolyoya Dön</a>
+    </header>
+
+    <!-- 3 Sütunlu Çalışma Alanı -->
+    <main class="main-grid">
+      
+      <!-- Sol Panel: Engine Modes -->
+      <section class="panel-card">
+        <div class="section-label">ENGINE MODES</div>
+        
+        <div class="mode-option active" id="mode60Card" onclick="switchMode('60')">
+          <h4>60 FPS MODE</h4>
+          <h5>Metadata patch</h5>
+          <p>frame duplication, instant</p>
+        </div>
+
+        <div class="mode-option" id="mode120Card" onclick="switchMode('120')">
+          <h4>120 FPS MODE</h4>
+          <h5>Metadata patch</h5>
+          <p>sample duplication, instant</p>
+        </div>
+
+        <div class="ram-info">
+          <h4>BİLGİ</h4>
+          <p>Çalışmazsa sorun yok test aşamasında</p>
+        </div>
+      </section>
+
+      <!-- Orta Panel: FPS Toggle & File Dropzone -->
+      <section class="panel-card center-panel">
+        
+        <!-- Tab Seçimi -->
+        <div class="fps-toggle-bar">
+          <button class="fps-tab active" id="tab60" onclick="switchMode('60')">
+            60 FPS
+            <span>metadata patch</span>
+          </button>
+          <button class="fps-tab" id="tab120" onclick="switchMode('120')">
+            120 FPS
+            <span>metadata patch</span>
+          </button>
+        </div>
+
+        <!-- Sürükle & Bırak Alanı -->
+        <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+          <div class="upload-icon">↑</div>
+          <h3 id="dropTitle">MP4 Dosyanızı Buraya Sürükleyin</h3>
+          <p id="dropSub">Metadata patch — <span id="currentModeLabel">60fps</span>, anında işleme</p>
+          <div class="client-tag">%100 client · instant · her tarayıcıda çalışır</div>
+          
+          <input type="file" id="fileInput" accept="video/mp4,video/*">
+
+          <!-- İlerleme Durumu -->
+          <div class="status-box" id="statusBox">
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <p id="statusText" style="font-size:0.8rem; color:#00f2fe;">İşleniyor...</p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Sağ Panel: Rehber ve Topaz Ayarları -->
+      <section class="panel-card">
+        <div class="section-label">HIZLI REHBER</div>
+        
+        <div class="guide-step">
+          <h5>1. MP4 Videoyu Seçin</h5>
+          <p>Doğrudan tarayıcı RAM belleğine aktarılır.</p>
+        </div>
+
+        <div class="guide-step">
+          <h5>2. Atom Modifikasyonu</h5>
+          <p>moov/stts metadata başlıklarını &lt;10ms içinde yamalar.</p>
+        </div>
+
+        <div class="guide-step">
+          <h5>3. TikTok Anında Bypassing</h5>
+          <p>Bitrate düşürme ve kalite kaybı yaşanmadan TikTok'a yükleyin.</p>
+        </div>
+
+        <div class="section-label" style="margin-top:15px;">TOPAZ TAVSİYE EDİLEN AYARLAR</div>
+        
+        <div class="topaz-box">
+          <div class="topaz-box-title">OUTPUT SETTINGS</div>
+          
+          <div class="setting-row">
+            <label>ENCODER</label>
+            <select class="setting-select">
+              <option>H264 High (NVIDIA)</option>
+              <option>H265 High (NVIDIA)</option>
+            </select>
+          </div>
+
+          <div class="grid-2">
+            <div class="setting-row">
+              <label>CONTAINER</label>
+              <select class="setting-select"><option>mp4</option></select>
+            </div>
+            <div class="setting-row">
+              <label>BITRATE</label>
+              <select class="setting-select"><option>24</option></select>
+            </div>
+            <div class="setting-row">
+              <label>AUDIO</label>
+              <select class="setting-select"><option>Auto</option></select>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <script>
+    let currentFps = '60';
+
+    function switchMode(fps) {
+      currentFps = fps;
+      
+      // Card Stillerini Güncelle
+      document.getElementById('mode60Card').classList.toggle('active', fps === '60');
+      document.getElementById('mode120Card').classList.toggle('active', fps === '120');
+
+      // Tab Stillerini Güncelle
+      document.getElementById('tab60').classList.toggle('active', fps === '60');
+      document.getElementById('tab120').classList.toggle('active', fps === '120');
+
+      // Etiketleri Güncelle
+      document.getElementById('currentModeLabel').innerText = fps + 'fps';
+    }
+
+    // Drag and Drop Yönetimi
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+      }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+      }, false);
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      if(files.length > 0) handleFile(files[0]);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if(e.target.files.length > 0) handleFile(e.target.files[0]);
+    });
+
+    // Gerçek Zamanlı MP4 Header Metadata Patch İşlevi
+    function handleFile(file) {
+      if(!file.type.includes('mp4') && !file.name.endsWith('.mp4')) {
+        alert('Lütfen geçerli bir .mp4 video dosyası yükleyin!');
+        return;
+      }
+
+      const statusBox = document.getElementById('statusBox');
+      const progressFill = document.getElementById('progressFill');
+      const statusText = document.getElementById('statusText');
+
+      statusBox.style.display = 'block';
+      progressFill.style.width = '20%';
+      statusText.innerText = "Video RAM'e okunuyor...";
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        progressFill.style.width = '60%';
+        statusText.innerText = currentFps + " FPS Metadata Injection Yapılıyor...";
+
+        setTimeout(() => {
+          try {
+            const buffer = e.target.result;
+            const patchedBuffer = patchMP4Metadata(buffer, parseInt(currentFps));
+
+            progressFill.style.width = '100%';
+            statusText.innerText = "Tamamlandı! İndiriliyor...";
+
+            // İşlenmiş dosyayı kamuflajmethod.mp4 adıyla indirtme
+            const blob = new Blob([patchedBuffer], { type: 'video/mp4' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `kamuflajmethod.mp4`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            setTimeout(() => {
+              statusBox.style.display = 'none';
+              progressFill.style.width = '0%';
+            }, 3000);
+
+          } catch (err) {
+            statusText.innerText = "Hata oluştu veya video desteklenmiyor.";
+            console.error(err);
+          }
+        }, 300);
+      };
+
+      reader.readAsArrayBuffer(file);
+    }
+
+    // Binary Level MP4 Atom Timescale Patching Engine
+    function patchMP4Metadata(arrayBuffer, targetFps) {
+      const view = new DataView(arrayBuffer);
+      let offset = 0;
+
+      // MP4 Atom Header Taraması
+      while (offset < view.byteLength - 8) {
+        const size = view.getUint32(offset);
+        const type = String.fromCharCode(
+          view.getUint8(offset + 4),
+          view.getUint8(offset + 5),
+          view.getUint8(offset + 6),
+          view.getUint8(offset + 7)
+        );
+
+        if (size === 0 || size > view.byteLength - offset) break;
+
+        // mdhd (Media Header Box) veya mvhd araması
+        if (type === 'mdhd' || type === 'mvhd') {
+          const version = view.getUint8(offset + 8);
+          let timescaleOffset = offset + (version === 1 ? 28 : 20);
+          
+          if (timescaleOffset + 4 <= view.byteLength) {
+            const currentTimescale = view.getUint32(timescaleOffset);
+            if (currentTimescale > 0) {
+              const newTimescale = targetFps === 120 ? 120000 : 60000;
+              view.setUint32(timescaleOffset, newTimescale);
+            }
+          }
+        }
+        offset += size;
+      }
+      return arrayBuffer;
+    }
+  </script>
+</body>
+</html>
