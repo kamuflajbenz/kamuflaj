@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>METHOD - BENZAE CC PACK</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at 50% 0%, #0a1122 0%, #040812 70%, #020408 100%);
+      --card-bg: rgba(11, 19, 38, 0.7);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-blue: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.25);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1240px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Yumuşatılmış Parlayan Çerçeve Efekti */
+    .lux-border-wrapper {
+      position: relative;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 50%, rgba(59, 130, 246, 0.2) 100%);
+      padding: 1px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .lux-border-wrapper:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(59, 130, 246, 0.35) 100%);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 25px var(--accent-glow);
+    }
+
+    /* Header / Üst Alan */
+    .header-panel {
+      background: rgba(8, 14, 28, 0.85);
+      border-radius: 23px;
+      padding: 36px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .header-nav-buttons {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 100px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-nav:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-nav svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    .header-title-box h1 {
+      font-size: 2.6rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .about-text {
+      max-width: 640px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* Method İçeriği Paneli */
+    .content-panel {
+      background: var(--card-bg);
+      border-radius: 23px;
+      padding: 40px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      width: 100%;
+    }
+
+    /* Video Yükleme Sürükle-Bırak Alanı */
+    .upload-box {
+      width: 100%;
+      max-width: 680px;
+      border: 2px dashed rgba(59, 130, 246, 0.4);
+      border-radius: 18px;
+      padding: 36px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      background: rgba(4, 8, 18, 0.5);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .upload-box:hover, .upload-box.dragover {
+      border-color: var(--accent-blue);
+      background: rgba(59, 130, 246, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .upload-icon {
+      width: 52px;
+      height: 52px;
+      color: var(--accent-blue);
+      margin-bottom: 4px;
+    }
+
+    .upload-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .upload-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Ayarlar & Opsiyonlar */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      width: 100%;
+      max-width: 680px;
+    }
+
+    .option-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 14px 18px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .option-card:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .option-card label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .option-card input[type="radio"], 
+    .option-card input[type="checkbox"] {
+      accent-color: var(--accent-blue);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    /* İlerleme (Progress) Alanı */
+    .progress-box {
+      width: 100%;
+      max-width: 680px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #2563eb, #3b82f6);
+      border-radius: 100px;
+      transition: width 0.2s ease;
+    }
+
+    /* Önizleme & İndir Butonu Alanı */
+    .result-box {
+      width: 100%;
+      max-width: 680px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .video-preview {
+      width: 100%;
+      max-height: 400px;
+      border-radius: 16px;
+      background: #000;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 32px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 18px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(37, 99, 235, 0.5);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .btn-action:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .alert-msg {
+      color: #ef4444;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Üst Header Panel -->
+    <div class="lux-border-wrapper">
+      <div class="header-panel">
+        
+        <!-- Üst Butonlar (TikTok - ANA SAYFA - Instagram) -->
+        <div class="header-nav-buttons">
+          <a href="https://www.tiktok.com/@kamuflaj.vlr" target="_blank" class="btn-nav">
+            <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 1 1-5.2-1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V5.8a6.34 6.34 0 0 0-1-.08A6.34 6.34 0 1 0 15.7 12V8.2a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-.88-.37z"/></svg>
+            TikTok
+          </a>
+
+          <a href="index.html" class="btn-nav">
+            ANA SAYFA
+          </a>
+
+          <a href="https://www.instagram.com/ereenjett/" target="_blank" class="btn-nav">
+            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            Instagram
+          </a>
+        </div>
+
+        <!-- Başlık -->
+        <div class="header-title-box">
+          <h1>METHOD SAYFASI</h1>
+        </div>
+
+        <!-- Açıklama Metni -->
+        <p class="about-text">
+          TikTok & Reels videolarınızı daha akıcı hale getirin. Videonuzu yükleyin, 60 FPS veya 120 FPS patch ayarlarını seçip yüksek kalitede dönüştürün.
+        </p>
+
+      </div>
+    </div>
+
+    <!-- Method Yükleme & Patch Alanı -->
+    <div class="lux-border-wrapper">
+      <div class="content-panel">
+
+        <!-- Sürükle Bırak Video Yükleme Kutusu -->
+        <div class="upload-box" id="dropArea" onclick="document.getElementById('videoInput').click()">
+          <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+          </svg>
+          <span class="upload-title" id="fileTitle">Videonuzu Sürükleyin veya Seçin</span>
+          <span class="upload-desc">MP4, MOV, WEBM (Maksimum 500 MB)</span>
+          <input type="file" id="videoInput" accept="video/*" style="display: none" onchange="handleFileSelect(event)">
+        </div>
+
+        <span class="alert-msg" id="alertMsg">Hata: Dosya boyutu 500 MB'ı geçemez!</span>
+
+        <!-- Patch Seçenekleri -->
+        <div class="options-grid">
+          <div class="option-card">
+            <label><input type="radio" name="fpsOption" value="60" checked> 60 FPS Patch</label>
+          </div>
+          <div class="option-card">
+            <label><input type="radio" name="fpsOption" value="120"> 120 FPS Patch</label>
+          </div>
+          <div class="option-card">
+            <label><input type="radio" id="enhanceColors" checked> Akıllı Renk/Kontrast</label>
+          </div>
+        </div>
+
+        <!-- Başlat Butonu -->
+        <button class="btn-action" id="startBtn" onclick="processVideo()" disabled>
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          VİDEOYU PATCH'LE
+        </button>
+
+        <!-- İlerleme (Progress) Kutusu -->
+        <div class="progress-box" id="progressBox">
+          <div class="progress-top">
+            <span id="statusLabel">İşleniyor...</span>
+            <span id="percentLabel">0%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <!-- Sonuç & Önizleme Kutusu -->
+        <div class="result-box" id="resultBox">
+          <video class="video-preview" id="previewVideo" controls></video>
+
+          <a id="downloadBtn" download="kamuflajmethod.mp4" class="btn-action">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+            PATCH'Lİ VİDEOYU İNDİR
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let selectedFile = null;
+    const MAX_SIZE_MB = 500;
+    const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
+
+    const dropArea = document.getElementById('dropArea');
+    const videoInput = document.getElementById('videoInput');
+    const fileTitle = document.getElementById('fileTitle');
+    const alertMsg = document.getElementById('alertMsg');
+    const startBtn = document.getElementById('startBtn');
+    const progressBox = document.getElementById('progressBox');
+    const progressFill = document.getElementById('progressFill');
+    const percentLabel = document.getElementById('percentLabel');
+    const statusLabel = document.getElementById('statusLabel');
+    const resultBox = document.getElementById('resultBox');
+    const previewVideo = document.getElementById('previewVideo');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    // Drag & Drop
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropArea.addEventListener(eventName, () => dropArea.classList.add('dragover'), false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, () => dropArea.classList.remove('dragover'), false);
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      if (files && files.length > 0) {
+        validateAndSetFile(files[0]);
+      }
+    });
+
+    function handleFileSelect(e) {
+      const files = e.target.files;
+      if (files && files.length > 0) {
+        validateAndSetFile(files[0]);
+      }
+    }
+
+    function validateAndSetFile(file) {
+      alertMsg.style.display = 'none';
+      resultBox.style.display = 'none';
+
+      if (!file.type.startsWith('video/')) {
+        alertMsg.innerText = 'Lütfen geçerli bir video dosyası seçin!';
+        alertMsg.style.display = 'block';
+        return;
+      }
+
+      // 500 MB Kontrolü
+      if (file.size > MAX_SIZE_BYTES) {
+        alertMsg.innerText = `Hata: Dosya boyutu 500 MB'ı geçemez! (Seçilen: ${(file.size / (1024 * 1024)).toFixed(1)} MB)`;
+        alertMsg.style.display = 'block';
+        selectedFile = null;
+        startBtn.disabled = true;
+        fileTitle.innerText = 'Videonuzu Sürükleyin veya Seçin';
+        return;
+      }
+
+      selectedFile = file;
+      fileTitle.innerText = `${file.name} (${(file.size / (1024 * 1024)).toFixed(1)} MB)`;
+      startBtn.disabled = false;
+    }
+
+    // Video Patchleme İşlemi (Canvas & Web Audio & MediaRecorder Engine)
+    async function processVideo() {
+      if (!selectedFile) return;
+
+      startBtn.disabled = true;
+      progressBox.style.display = 'flex';
+      resultBox.style.display = 'none';
+      progressFill.style.width = '0%';
+      percentLabel.innerText = '0%';
+      statusLabel.innerText = 'Video hazırlanıyor...';
+
+      const fpsTarget = parseInt(document.querySelector('input[name="fpsOption"]:checked').value);
+      const enhanceColors = document.getElementById('enhanceColors').checked;
+
+      const videoUrl = URL.createObjectURL(selectedFile);
+      const tempVideo = document.createElement('video');
+      tempVideo.src = videoUrl;
+      tempVideo.muted = false;
+      tempVideo.crossOrigin = "anonymous";
+
+      await new Promise(resolve => {
+        tempVideo.onloadedmetadata = () => resolve();
+      });
+
+      const canvas = document.createElement('canvas');
+      canvas.width = tempVideo.videoWidth || 1280;
+      canvas.height = tempVideo.videoHeight || 720;
+      const ctx = canvas.getContext('2d');
+
+      // Ses Akışı
+      let audioTrack = null;
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioCtx.createMediaElementSource(tempVideo);
+        const dest = audioCtx.createMediaStreamDestination();
+        source.connect(dest);
+        source.connect(audioCtx.destination);
+        audioTrack = dest.stream.getAudioTracks()[0];
+      } catch (e) {
+        console.log("Ses işleme atlandı veya desteklenmiyor.");
+      }
+
+      const canvasStream = canvas.captureStream(fpsTarget);
+      if (audioTrack) {
+        canvasStream.addTrack(audioTrack);
+      }
+
+      let mimeType = 'video/webm;codecs=vp9';
+      if (!MediaRecorder.isTypeSupported(mimeType)) {
+        mimeType = 'video/mp4';
+        if (!MediaRecorder.isTypeSupported(mimeType)) {
+          mimeType = '';
+        }
+      }
+
+      const recorderOptions = mimeType ? { mimeType, videoBitsPerSecond: 12000000 } : {};
+      const recorder = new MediaRecorder(canvasStream, recorderOptions);
+      const chunks = [];
+
+      recorder.ondataavailable = e => {
+        if (e.data.size > 0) chunks.push(e.data);
+      };
+
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'video/mp4' });
+        const resultUrl = URL.createObjectURL(blob);
+
+        previewVideo.src = resultUrl;
+        downloadBtn.href = resultUrl;
+        downloadBtn.download = "kamuflajmethod.mp4"; // İstenen dosya adı
+
+        progressBox.style.display = 'none';
+        resultBox.style.display = 'flex';
+        startBtn.disabled = false;
+      };
+
+      recorder.start();
+      tempVideo.currentTime = 0;
+      await tempVideo.play();
+
+      const duration = tempVideo.duration;
+
+      function renderFrame() {
+        if (tempVideo.paused || tempVideo.ended) {
+          if (recorder.state === 'recording') {
+            recorder.stop();
+          }
+          return;
+        }
+
+        ctx.drawImage(tempVideo, 0, 0, canvas.width, canvas.height);
+
+        // Renk & Kontrast Patch Filtresi
+        if (enhanceColors) {
+          ctx.filter = 'contrast(1.08) saturate(1.15) brightness(1.02)';
+          ctx.drawImage(canvas, 0, 0);
+          ctx.filter = 'none';
+        }
+
+        const pct = Math.min(Math.round((tempVideo.currentTime / duration) * 100), 100);
+        progressFill.style.width = pct + '%';
+        percentLabel.innerText = pct + '%';
+        statusLabel.innerText = `${fpsTarget} FPS Patch uygulanıyor...`;
+
+        requestAnimationFrame(renderFrame);
+      }
+
+      renderFrame();
+    }
+  </script>
+
+</body>
+</html>
